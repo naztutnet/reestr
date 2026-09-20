@@ -85,6 +85,31 @@
   }
   .find input::placeholder{ color:#9a9a9a; }
 
+  .view-toggle{
+    display:inline-flex;
+    background:var(--card);
+    border-radius:10px;
+    padding:3px;
+    margin-bottom:14px;
+    gap:2px;
+  }
+  .view-toggle button{
+    border:none;
+    background:none;
+    font:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-dim);
+    padding:7px 14px;
+    border-radius:7px;
+    cursor:pointer;
+  }
+  .view-toggle button.active{
+    background:#ffffff;
+    color:var(--text);
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+  }
+
   /* ---------- note box ---------- */
   .note{
     border:1px solid var(--line);
@@ -242,6 +267,10 @@
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/><line x1="11" y1="11" x2="15" y2="15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <input id="search" type="text" placeholder="Найти позицию или кандидата…" autocomplete="off">
     </div>
+    <div class="view-toggle" id="view-toggle">
+      <button type="button" data-view="actors" class="active">По актёрам</button>
+      <button type="button" data-view="dates">По датам</button>
+    </div>
   </header>
 
   <div id="list"></div>
@@ -256,125 +285,7 @@
 </div>
 
 <script>
-  var DATA = [
- {"character":"АЛЯ","actors":[
-   {"actor":"Вереск Мэгги","n_photo":1,"n_video":2,"thumb":"alya-veresk-meggi.jpg"},
-   {"actor":"Золотухина Мария","n_photo":1,"n_video":2,"thumb":"alya-zolotuhina-mariya.jpg"},
-   {"actor":"Иванова Виктория","n_photo":1,"n_video":2,"thumb":"alya-ivanova-viktoriya.jpg"},
-   {"actor":"Мокерова Виктория","n_photo":1,"n_video":2,"thumb":"alya-mokerova-viktoriya.jpg"}
- ]},
- {"character":"БОЙКО","actors":[
-   {"actor":"Бриченко Василий","n_photo":1,"n_video":1,"thumb":"boiko-brichenko-vasilii.jpg"},
-   {"actor":"Дьяков Сергей","n_photo":1,"n_video":2,"thumb":"boiko-dyakov-sergei.jpg"},
-   {"actor":"Емельянов Максим","n_photo":1,"n_video":1,"thumb":"boiko-emelyanov-maksim.jpg"},
-   {"actor":"Иванов Артур","n_photo":1,"n_video":1,"thumb":"boiko-ivanov-artur.jpg"},
-   {"actor":"Куличков Дмитрий","n_photo":1,"n_video":1,"thumb":"boiko-kulichkov-dmitrii.jpg"},
-   {"actor":"Макуха Антон","n_photo":1,"n_video":1,"thumb":"boiko-makuha-anton.jpg"},
-   {"actor":"Полицеймако Михаил","n_photo":91,"n_video":1,"thumb":"boiko-policeimako-mihail.jpg"},
-   {"actor":"Свирский Владимир","n_photo":1,"n_video":1,"thumb":"boiko-svirskii-vladimir.jpg"},
-   {"actor":"Уросов Дмитрий","n_photo":1,"n_video":1,"thumb":"boiko-urosov-dmitrii.jpg"}
- ]},
- {"character":"ЖДАНОВ","actors":[
-   {"actor":"Волков Сергей","n_photo":71,"n_video":3,"thumb":"zhdanov-volkov-sergei.jpg"},
-   {"actor":"Лыков Илья","n_photo":1,"n_video":1,"thumb":"zhdanov-lykov-ilya.jpg"},
-   {"actor":"Степашин Игорь","n_photo":1,"n_video":1,"thumb":"zhdanov-stepashin-igor.jpg"}
- ]},
- {"character":"ЖЕНА КРЕПСА","actors":[
-   {"actor":"Васильева Марина","n_photo":1,"n_video":2,"thumb":"zhena-krepsa-vasileva-marina.jpg"},
-   {"actor":"Кавалай-Аксенова Леля","n_photo":1,"n_video":4,"thumb":"zhena-krepsa-kavalai-aksenova-lelya.jpg"},
-   {"actor":"Милютина Диана","n_photo":1,"n_video":2,"thumb":"zhena-krepsa-milyutina-diana.jpg"},
-   {"actor":"Феофанова Варвара","n_photo":1,"n_video":2,"thumb":"zhena-krepsa-feofanova-varvara.jpg"},
-   {"actor":"Чернышова Полина","n_photo":1,"n_video":2,"thumb":"zhena-krepsa-chernyshova-polina.jpg"}
- ]},
- {"character":"КОЛЮЖНЫЙ","actors":[
-   {"actor":"Буткевич Василий","n_photo":1,"n_video":1,"thumb":"kolyuzhnyi-butkevich-vasilii.jpg"},
-   {"actor":"Гарцунов Владимир","n_photo":1,"n_video":1,"thumb":"kolyuzhnyi-garcunov-vladimir.jpg"},
-   {"actor":"Костромыкин Максим","n_photo":61,"n_video":1,"thumb":"kolyuzhnyi-kostromykin-maksim.jpg"},
-   {"actor":"Тябин Данил","n_photo":1,"n_video":1,"thumb":"kolyuzhnyi-tyabin-danil.jpg"},
-   {"actor":"Тяптушкин Владимир","n_photo":1,"n_video":1,"thumb":"kolyuzhnyi-tyaptushkin-vladimir.jpg"}
- ]},
- {"character":"КРЕПС","actors":[
-   {"actor":"Кононец Александр","n_photo":1,"n_video":1,"thumb":"kreps-kononec-aleksandr.jpg"},
-   {"actor":"Крылов Артем","n_photo":1,"n_video":1,"thumb":"kreps-krylov-artem.jpg"},
-   {"actor":"Попов Павел","n_photo":1,"n_video":1,"thumb":"kreps-popov-pavel.jpg"},
-   {"actor":"Скворцов Петр","n_photo":1,"n_video":2,"thumb":"kreps-skvorcov-petr.jpg"},
-   {"actor":"Стеклов Данила","n_photo":1,"n_video":1,"thumb":"kreps-steklov-danila.jpg"},
-   {"actor":"Сумин Дмитрий","n_photo":1,"n_video":1,"thumb":"kreps-sumin-dmitrii.jpg"}
- ]},
- {"character":"ЛИЛЯ","actors":[
-   {"actor":"Александрова Карина","n_photo":1,"n_video":2,"thumb":"lilya-aleksandrova-karina.jpg"},
-   {"actor":"Сопова Ольга","n_photo":1,"n_video":1,"thumb":"lilya-sopova-olga.jpg"},
-   {"actor":"Шумакова Екатерина","n_photo":1,"n_video":1,"thumb":"lilya-shumakova-ekaterina.jpg"}
- ]},
- {"character":"МЕРАБ","actors":[
-   {"actor":"Перель Григорий","n_photo":1,"n_video":1,"thumb":"merab-perel-grigorii.jpg"}
- ]},
- {"character":"МОЛОДАЯ ПЕТРОВА","actors":[
-   {"actor":"Енгалычева Вера","n_photo":1,"n_video":1,"thumb":"molodaya-petrova-engalycheva-vera.jpg"}
- ]},
- {"character":"МОТОВИЛОВ","actors":[
-   {"actor":"Бершауэр Ростислав","n_photo":1,"n_video":2,"thumb":"motovilov-bershauer-rostislav.jpg"},
-   {"actor":"Деревянко Павел","n_photo":1,"n_video":2,"thumb":"motovilov-derevyanko-pavel.jpg"},
-   {"actor":"Майков Павел","n_photo":1,"n_video":2,"thumb":"motovilov-maikov-pavel.jpg"},
-   {"actor":"Полицеймако Михаил","n_photo":1,"n_video":1,"thumb":"motovilov-policeimako-mihail.jpg"},
-   {"actor":"Яценко Александр","n_photo":1,"n_video":2,"thumb":"motovilov-yacenko-aleksandr.jpg"}
- ]},
- {"character":"ПАВЛОВ","actors":[
-   {"actor":"Розин Алексей","n_photo":1,"n_video":5,"thumb":"pavlov-rozin-aleksei.jpg"},
-   {"actor":"Ткачук Евгений","n_photo":1,"n_video":1,"thumb":"pavlov-tkachuk-evgenii.jpg"}
- ]},
- {"character":"ПЕТРОВА","actors":[
-   {"actor":"Агуреева Полина","n_photo":1,"n_video":2,"thumb":"petrova-agureeva-polina.jpg"},
-   {"actor":"Александрова Марина","n_photo":8,"n_video":5,"thumb":"petrova-aleksandrova-marina.jpg"},
-   {"actor":"Апексимова Ирина","n_photo":1,"n_video":2,"thumb":"petrova-apeksimova-irina.jpg"},
-   {"actor":"Исакова Виктория","n_photo":1,"n_video":2,"thumb":"petrova-isakova-viktoriya.jpg"},
-   {"actor":"Кутепова Ксения","n_photo":1,"n_video":2,"thumb":"petrova-kutepova-kseniya.jpg"},
-   {"actor":"Лядова Елена","n_photo":1,"n_video":3,"thumb":"petrova-lyadova-elena.jpg"},
-   {"actor":"Марченко Юлия","n_photo":1,"n_video":3,"thumb":"petrova-marchenko-yuliya.jpg"},
-   {"actor":"Сафонова Елена","n_photo":1,"n_video":2,"thumb":"petrova-safonova-elena.jpg"},
-   {"actor":"Сексте Яна","n_photo":221,"n_video":3,"thumb":"petrova-sekste-yana.jpg"},
-   {"actor":"Сигалова Алла","n_photo":1,"n_video":2,"thumb":"petrova-sigalova-alla.jpg"},
-   {"actor":"Смольникова Мария","n_photo":1,"n_video":1,"thumb":"petrova-smolnikova-mariya.jpg"},
-   {"actor":"Толстоганова Виктория","n_photo":1,"n_video":3,"thumb":"petrova-tolstoganova-viktoriya.jpg"},
-   {"actor":"Цигаль-Полищук Мариэтта","n_photo":1,"n_video":3,"thumb":"petrova-cigal-polischuk-marietta.jpg"}
- ]},
- {"character":"СБАРСКИЙ","actors":[
-   {"actor":"Бесчастный Артур","n_photo":1,"n_video":1,"thumb":"sbarskii-beschastnyi-artur.jpg"},
-   {"actor":"Епишев Сергей","n_photo":1,"n_video":1,"thumb":"sbarskii-epishev-sergei.jpg"},
-   {"actor":"Севриновский Максим","n_photo":1,"n_video":1,"thumb":"sbarskii-sevrinovskii-maksim.jpg"},
-   {"actor":"Хрипунов Игорь","n_photo":1,"n_video":1,"thumb":"sbarskii-hripunov-igor.jpg"}
- ]},
- {"character":"СВЕТЛАНА","actors":[
-   {"actor":"Гвасалия Алина","n_photo":1,"n_video":1,"thumb":"svetlana-gvasaliya-alina.jpg"},
-   {"actor":"Перелыгина Василиса","n_photo":1,"n_video":2,"thumb":"svetlana-perelygina-vasilisa.jpg"},
-   {"actor":"Рафеева Полина","n_photo":1,"n_video":2,"thumb":"svetlana-rafeeva-polina.jpg"},
-   {"actor":"Стойилкович Тина","n_photo":1,"n_video":1,"thumb":"svetlana-stoiilkovich-tina.jpg"},
-   {"actor":"Тимербаева Рината","n_photo":1,"n_video":1,"thumb":"svetlana-timerbaeva-rinata.jpg"}
- ]},
- {"character":"СЕРАФИМА","actors":[
-   {"actor":"Нестерова Елена","n_photo":1,"n_video":2,"thumb":"serafima-nesterova-elena.jpg"},
-   {"actor":"Рогожкина Наталья","n_photo":1,"n_video":2,"thumb":"serafima-rogozhkina-natalya.jpg"},
-   {"actor":"Стеклова Агриппина","n_photo":1,"n_video":1,"thumb":"serafima-steklova-agrippina.jpg"}
- ]},
- {"character":"СТЕЛЛА","actors":[
-   {"actor":"Герасимова Ариана","n_photo":1,"n_video":3,"thumb":"stella-gerasimova-ariana.jpg"},
-   {"actor":"Гладенко Анастасия","n_photo":1,"n_video":3,"thumb":"stella-gladenko-anastasiya.jpg"},
-   {"actor":"Екатеринчева Анастасия","n_photo":1,"n_video":3,"thumb":"stella-ekaterincheva-anastasiya.jpg"},
-   {"actor":"Коваленко София","n_photo":1,"n_video":3,"thumb":"stella-kovalenko-sofiya.jpg"},
-   {"actor":"Самохина Владислава","n_photo":1,"n_video":3,"thumb":"stella-samohina-vladislava.jpg"},
-   {"actor":"Червова Екатерина","n_photo":1,"n_video":3,"thumb":"stella-chervova-ekaterina.jpg"},
-   {"actor":"Шидловская Софья","n_photo":1,"n_video":3,"thumb":"stella-shidlovskaya-sofya.jpg"}
- ]},
- {"character":"СТЕЛЛА МАЛЕНЬКАЯ","actors":[
-   {"actor":"Полушкина Элизабета","n_photo":1,"n_video":2,"thumb":"stella-malenkaya-polushkina-elizabeta.jpg"}
- ]},
- {"character":"СТЕЛЛА ПОСТАРШЕ","actors":[
-   {"actor":"Тихонова Александра","n_photo":2,"n_video":2,"thumb":"stella-postarshe-tihonova-aleksandra.jpg"}
- ]},
- {"character":"ЮРИЙ ЖДАНОВ","actors":[
-   {"actor":"Волков Сергей","n_photo":1,"n_video":1,"thumb":"yurii-zhdanov-volkov-sergei.jpg"}
- ]}
-];
+  var DATA = [{"character": "АЛЯ", "actors": [{"actor": "Вереск Мэгги", "n_photo": 1, "n_video": 2, "thumb": "alya-veresk-meggi.jpg", "date": "260820"}, {"actor": "Золотухина Мария", "n_photo": 1, "n_video": 2, "thumb": "alya-zolotuhina-mariya.jpg", "date": "260707"}, {"actor": "Иванова Виктория", "n_photo": 1, "n_video": 2, "thumb": "alya-ivanova-viktoriya.jpg", "date": "260707"}, {"actor": "Мокерова Виктория", "n_photo": 1, "n_video": 2, "thumb": "alya-mokerova-viktoriya.jpg", "date": "260715"}]}, {"character": "БОЙКО", "actors": [{"actor": "Бриченко Василий", "n_photo": 1, "n_video": 1, "thumb": "boiko-brichenko-vasilii.jpg", "date": "260620"}, {"actor": "Дьяков Сергей", "n_photo": 1, "n_video": 2, "thumb": "boiko-dyakov-sergei.jpg", "date": "260530"}, {"actor": "Емельянов Максим", "n_photo": 1, "n_video": 1, "thumb": "boiko-emelyanov-maksim.jpg", "date": "260529"}, {"actor": "Иванов Артур", "n_photo": 1, "n_video": 1, "thumb": "boiko-ivanov-artur.jpg", "date": "260703"}, {"actor": "Куличков Дмитрий", "n_photo": 1, "n_video": 1, "thumb": "boiko-kulichkov-dmitrii.jpg", "date": "260820"}, {"actor": "Макуха Антон", "n_photo": 1, "n_video": 1, "thumb": "boiko-makuha-anton.jpg", "date": "260603"}, {"actor": "Полицеймако Михаил", "n_photo": 91, "n_video": 1, "thumb": "boiko-policeimako-mihail.jpg", "date": "260715"}, {"actor": "Свирский Владимир", "n_photo": 1, "n_video": 1, "thumb": "boiko-svirskii-vladimir.jpg", "date": "260705"}, {"actor": "Уросов Дмитрий", "n_photo": 1, "n_video": 1, "thumb": "boiko-urosov-dmitrii.jpg", "date": "260628"}]}, {"character": "ЖДАНОВ", "actors": [{"actor": "Волков Сергей", "n_photo": 71, "n_video": 3, "thumb": "zhdanov-volkov-sergei.jpg", "date": "260628"}, {"actor": "Лыков Илья", "n_photo": 1, "n_video": 1, "thumb": "zhdanov-lykov-ilya.jpg", "date": "260611"}, {"actor": "Степашин Игорь", "n_photo": 1, "n_video": 1, "thumb": "zhdanov-stepashin-igor.jpg", "date": "260628"}]}, {"character": "ЖЕНА КРЕПСА", "actors": [{"actor": "Васильева Марина", "n_photo": 1, "n_video": 2, "thumb": "zhena-krepsa-vasileva-marina.jpg", "date": "260725"}, {"actor": "Кавалай-Аксенова Леля", "n_photo": 1, "n_video": 4, "thumb": "zhena-krepsa-kavalai-aksenova-lelya.jpg", "date": "260705"}, {"actor": "Милютина Диана", "n_photo": 1, "n_video": 2, "thumb": "zhena-krepsa-milyutina-diana.jpg", "date": "260707"}, {"actor": "Феофанова Варвара", "n_photo": 1, "n_video": 2, "thumb": "zhena-krepsa-feofanova-varvara.jpg", "date": "260703"}, {"actor": "Чернышова Полина", "n_photo": 1, "n_video": 2, "thumb": "zhena-krepsa-chernyshova-polina.jpg", "date": "260726"}]}, {"character": "КОЛЮЖНЫЙ", "actors": [{"actor": "Буткевич Василий", "n_photo": 1, "n_video": 1, "thumb": "kolyuzhnyi-butkevich-vasilii.jpg", "date": "260707"}, {"actor": "Гарцунов Владимир", "n_photo": 1, "n_video": 1, "thumb": "kolyuzhnyi-garcunov-vladimir.jpg", "date": "260707"}, {"actor": "Костромыкин Максим", "n_photo": 61, "n_video": 1, "thumb": "kolyuzhnyi-kostromykin-maksim.jpg", "date": "260715"}, {"actor": "Тябин Данил", "n_photo": 1, "n_video": 1, "thumb": "kolyuzhnyi-tyabin-danil.jpg", "date": "260703"}, {"actor": "Тяптушкин Владимир", "n_photo": 1, "n_video": 1, "thumb": "kolyuzhnyi-tyaptushkin-vladimir.jpg", "date": "260629"}]}, {"character": "КРЕПС", "actors": [{"actor": "Кононец Александр", "n_photo": 1, "n_video": 1, "thumb": "kreps-kononec-aleksandr.jpg", "date": "260529"}, {"actor": "Крылов Артем", "n_photo": 1, "n_video": 1, "thumb": "kreps-krylov-artem.jpg", "date": "260529"}, {"actor": "Попов Павел", "n_photo": 1, "n_video": 1, "thumb": "kreps-popov-pavel.jpg", "date": "260604"}, {"actor": "Скворцов Петр", "n_photo": 1, "n_video": 2, "thumb": "kreps-skvorcov-petr.jpg", "date": "260620"}, {"actor": "Стеклов Данила", "n_photo": 1, "n_video": 1, "thumb": "kreps-steklov-danila.jpg", "date": "260614"}, {"actor": "Сумин Дмитрий", "n_photo": 1, "n_video": 1, "thumb": "kreps-sumin-dmitrii.jpg", "date": "260530"}]}, {"character": "ЛИЛЯ", "actors": [{"actor": "Александрова Карина", "n_photo": 1, "n_video": 2, "thumb": "lilya-aleksandrova-karina.jpg", "date": "260809"}, {"actor": "Сопова Ольга", "n_photo": 1, "n_video": 1, "thumb": "lilya-sopova-olga.jpg", "date": "260705"}, {"actor": "Шумакова Екатерина", "n_photo": 1, "n_video": 1, "thumb": "lilya-shumakova-ekaterina.jpg", "date": "260705"}]}, {"character": "МЕРАБ", "actors": [{"actor": "Перель Григорий", "n_photo": 1, "n_video": 1, "thumb": "merab-perel-grigorii.jpg", "date": "260820"}]}, {"character": "МОЛОДАЯ ПЕТРОВА", "actors": [{"actor": "Енгалычева Вера", "n_photo": 1, "n_video": 1, "thumb": "molodaya-petrova-engalycheva-vera.jpg", "date": "260725"}]}, {"character": "МОТОВИЛОВ", "actors": [{"actor": "Бершауэр Ростислав", "n_photo": 1, "n_video": 2, "thumb": "motovilov-bershauer-rostislav.jpg", "date": "260529"}, {"actor": "Деревянко Павел", "n_photo": 1, "n_video": 2, "thumb": "motovilov-derevyanko-pavel.jpg", "date": "260707"}, {"actor": "Майков Павел", "n_photo": 1, "n_video": 2, "thumb": "motovilov-maikov-pavel.jpg", "date": "260715"}, {"actor": "Полицеймако Михаил", "n_photo": 1, "n_video": 1, "thumb": "motovilov-policeimako-mihail.jpg", "date": "260620"}, {"actor": "Яценко Александр", "n_photo": 1, "n_video": 2, "thumb": "motovilov-yacenko-aleksandr.jpg", "date": "260529"}]}, {"character": "ПАВЛОВ", "actors": [{"actor": "Розин Алексей", "n_photo": 1, "n_video": 5, "thumb": "pavlov-rozin-aleksei.jpg", "date": "260603"}, {"actor": "Ткачук Евгений", "n_photo": 1, "n_video": 1, "thumb": "pavlov-tkachuk-evgenii.jpg", "date": "260820"}]}, {"character": "ПЕТРОВА", "actors": [{"actor": "Агуреева Полина", "n_photo": 1, "n_video": 2, "thumb": "petrova-agureeva-polina.jpg", "date": "260628"}, {"actor": "Александрова Марина", "n_photo": 8, "n_video": 5, "thumb": "petrova-aleksandrova-marina.jpg", "date": "260603"}, {"actor": "Апексимова Ирина", "n_photo": 1, "n_video": 2, "thumb": "petrova-apeksimova-irina.jpg", "date": "260907"}, {"actor": "Исакова Виктория", "n_photo": 1, "n_video": 2, "thumb": "petrova-isakova-viktoriya.jpg", "date": "260830"}, {"actor": "Кутепова Ксения", "n_photo": 1, "n_video": 2, "thumb": "petrova-kutepova-kseniya.jpg", "date": "260614"}, {"actor": "Лядова Елена", "n_photo": 1, "n_video": 3, "thumb": "petrova-lyadova-elena.jpg", "date": "260809"}, {"actor": "Марченко Юлия", "n_photo": 1, "n_video": 3, "thumb": "petrova-marchenko-yuliya.jpg", "date": "260809"}, {"actor": "Сафонова Елена", "n_photo": 1, "n_video": 2, "thumb": "petrova-safonova-elena.jpg", "date": "260907"}, {"actor": "Сексте Яна", "n_photo": 221, "n_video": 3, "thumb": "petrova-sekste-yana.jpg", "date": "260620"}, {"actor": "Сигалова Алла", "n_photo": 1, "n_video": 2, "thumb": "petrova-sigalova-alla.jpg", "date": "260907"}, {"actor": "Смольникова Мария", "n_photo": 1, "n_video": 1, "thumb": "petrova-smolnikova-mariya.jpg", "date": "260809"}, {"actor": "Толстоганова Виктория", "n_photo": 1, "n_video": 3, "thumb": "petrova-tolstoganova-viktoriya.jpg", "date": "260620"}, {"actor": "Цигаль-Полищук Мариэтта", "n_photo": 1, "n_video": 3, "thumb": "petrova-cigal-polischuk-marietta.jpg", "date": "260530"}]}, {"character": "СБАРСКИЙ", "actors": [{"actor": "Бесчастный Артур", "n_photo": 1, "n_video": 1, "thumb": "sbarskii-beschastnyi-artur.jpg", "date": "260603"}, {"actor": "Епишев Сергей", "n_photo": 1, "n_video": 1, "thumb": "sbarskii-epishev-sergei.jpg", "date": "260611"}, {"actor": "Севриновский Максим", "n_photo": 1, "n_video": 1, "thumb": "sbarskii-sevrinovskii-maksim.jpg", "date": "260604"}, {"actor": "Хрипунов Игорь", "n_photo": 1, "n_video": 1, "thumb": "sbarskii-hripunov-igor.jpg", "date": "260530"}]}, {"character": "СВЕТЛАНА", "actors": [{"actor": "Гвасалия Алина", "n_photo": 1, "n_video": 1, "thumb": "svetlana-gvasaliya-alina.jpg", "date": "260604"}, {"actor": "Перелыгина Василиса", "n_photo": 1, "n_video": 2, "thumb": "svetlana-perelygina-vasilisa.jpg", "date": "260604"}, {"actor": "Рафеева Полина", "n_photo": 1, "n_video": 2, "thumb": "svetlana-rafeeva-polina.jpg", "date": "260603"}, {"actor": "Стойилкович Тина", "n_photo": 1, "n_video": 1, "thumb": "svetlana-stoiilkovich-tina.jpg", "date": "260604"}, {"actor": "Тимербаева Рината", "n_photo": 1, "n_video": 1, "thumb": "svetlana-timerbaeva-rinata.jpg", "date": "260530"}]}, {"character": "СЕРАФИМА", "actors": [{"actor": "Нестерова Елена", "n_photo": 1, "n_video": 2, "thumb": "serafima-nesterova-elena.jpg", "date": "260629"}, {"actor": "Рогожкина Наталья", "n_photo": 1, "n_video": 2, "thumb": "serafima-rogozhkina-natalya.jpg", "date": "260629"}, {"actor": "Стеклова Агриппина", "n_photo": 1, "n_video": 1, "thumb": "serafima-steklova-agrippina.jpg", "date": "260703"}]}, {"character": "СТЕЛЛА", "actors": [{"actor": "Герасимова Ариана", "n_photo": 1, "n_video": 3, "thumb": "stella-gerasimova-ariana.jpg", "date": "260809"}, {"actor": "Гладенко Анастасия", "n_photo": 1, "n_video": 3, "thumb": "stella-gladenko-anastasiya.jpg", "date": "260809"}, {"actor": "Екатеринчева Анастасия", "n_photo": 1, "n_video": 3, "thumb": "stella-ekaterincheva-anastasiya.jpg", "date": "260705"}, {"actor": "Коваленко София", "n_photo": 1, "n_video": 3, "thumb": "stella-kovalenko-sofiya.jpg", "date": "260809"}, {"actor": "Самохина Владислава", "n_photo": 1, "n_video": 3, "thumb": "stella-samohina-vladislava.jpg", "date": "260628"}, {"actor": "Червова Екатерина", "n_photo": 1, "n_video": 3, "thumb": "stella-chervova-ekaterina.jpg", "date": "260705"}, {"actor": "Шидловская Софья", "n_photo": 1, "n_video": 3, "thumb": "stella-shidlovskaya-sofya.jpg", "date": "260629"}]}, {"character": "СТЕЛЛА МАЛЕНЬКАЯ", "actors": [{"actor": "Полушкина Элизабета", "n_photo": 1, "n_video": 2, "thumb": "stella-malenkaya-polushkina-elizabeta.jpg", "date": "260628"}]}, {"character": "СТЕЛЛА ПОСТАРШЕ", "actors": [{"actor": "Тихонова Александра", "n_photo": 2, "n_video": 2, "thumb": "stella-postarshe-tihonova-aleksandra.jpg", "date": "260628"}]}, {"character": "ЮРИЙ ЖДАНОВ", "actors": [{"actor": "Волков Сергей", "n_photo": 1, "n_video": 1, "thumb": "yurii-zhdanov-volkov-sergei.jpg", "date": "260604"}]}];
 
   var BASE_PATH = ["РЕФЛЕКС","Пробы"];
   function ydLink(parts){ return "https://disk.yandex.ru/client/disk/" + parts.map(encodeURIComponent).join("/"); }
@@ -414,28 +325,27 @@
   });
 
   // ---------- page build (only runs after unlock) ----------
-  function buildPage(){
-    var list = document.getElementById("list");
-    var totalActors = 0, totalMaterials = 0;
-    DATA.forEach(function(g){
-      totalActors += g.actors.length;
-      g.actors.forEach(function(a){ totalMaterials += (a.n_photo||0) + (a.n_video||0); });
-    });
-    document.getElementById("stat-roles").textContent = DATA.length;
-    document.getElementById("stat-actors").textContent = totalActors;
-    document.getElementById("stat-roles-word").textContent = pluralRu(DATA.length,'позиция','позиции','позиций');
-    document.getElementById("stat-actors-word").textContent = pluralRu(totalActors,'кандидат','кандидата','кандидатов');
-    document.getElementById("stat-materials").textContent = totalMaterials;
-    document.getElementById("stat-materials-word").textContent = pluralRu(totalMaterials,'материал','материала','материалов');
+  var MONTHS_RU = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+  function formatDate(d){
+    // d = "YYMMDD"
+    if (!d) return null;
+    var yy = parseInt(d.slice(0,2),10), mm = parseInt(d.slice(2,4),10), dd = parseInt(d.slice(4,6),10);
+    return { key:d, day:dd, label: dd + " " + MONTHS_RU[mm-1] + " " + (2000+yy) };
+  }
 
-    var seenIn = {};
-    DATA.forEach(function(g){
-      g.actors.forEach(function(a){
-        seenIn[a.actor] = seenIn[a.actor] || [];
-        seenIn[a.actor].push(g.character);
-      });
-    });
+  function cardHtml(character, a, also){
+    var photoHref = ydLink(BASE_PATH.concat([character, a.actor, "фото"]));
+    var videoHref = ydLink(BASE_PATH.concat([character, a.actor, "видео"]));
+    return '<img class="thumb" src="thumbs/'+a.thumb+'" alt="" loading="lazy">'+
+      '<div class="name">'+a.actor+'</div>'+
+      (also || '')+
+      '<div class="links">'+
+        '<a class="'+(a.n_photo?'':'void')+'" href="'+photoHref+'" target="_blank" rel="noopener">фото</a>'+
+        '<a class="'+(a.n_video?'':'void')+'" href="'+videoHref+'" target="_blank" rel="noopener">видео</a>'+
+      '</div>';
+  }
 
+  function renderByActors(list, seenIn){
     DATA.forEach(function(group){
       var section = document.createElement("section");
       section.dataset.match = norm(group.character);
@@ -460,28 +370,60 @@
           var others = seenIn[a.actor].filter(function(c){ return c !== group.character; });
           also = '<div class="also">+ '+others.join(", ")+'</div>';
         }
-
-        var photoHref = ydLink(BASE_PATH.concat([group.character, a.actor, "фото"]));
-        var videoHref = ydLink(BASE_PATH.concat([group.character, a.actor, "видео"]));
-
-        card.innerHTML =
-          '<img class="thumb" src="thumbs/'+a.thumb+'" alt="" loading="lazy">'+
-          '<div class="name">'+a.actor+'</div>'+
-          also+
-          '<div class="links">'+
-            '<a class="'+(a.n_photo?'':'void')+'" href="'+photoHref+'" target="_blank" rel="noopener">фото</a>'+
-            '<a class="'+(a.n_video?'':'void')+'" href="'+videoHref+'" target="_blank" rel="noopener">видео</a>'+
-          '</div>';
+        card.innerHTML = cardHtml(group.character, a, also);
         grid.appendChild(card);
       });
 
       section.appendChild(grid);
       list.appendChild(section);
     });
+  }
 
+  function renderByDates(list){
+    var byDate = {};
+    DATA.forEach(function(group){
+      group.actors.forEach(function(a){
+        var fd = formatDate(a.date);
+        var key = fd ? fd.key : "0";
+        byDate[key] = byDate[key] || { fd: fd, items: [] };
+        byDate[key].items.push({ character: group.character, actor: a });
+      });
+    });
+    var keys = Object.keys(byDate).sort();
+    keys.forEach(function(key){
+      var bucket = byDate[key];
+      var section = document.createElement("section");
+      var label = bucket.fd ? bucket.fd.label : "Дата не определена";
+      section.dataset.match = norm(label);
+
+      var head = document.createElement("div");
+      head.className = "role-head";
+      head.innerHTML =
+        '<span class="role-name">'+label+'</span>'+
+        '<span class="role-count">'+bucket.items.length+' '+pluralRu(bucket.items.length,'кандидат','кандидата','кандидатов')+'</span>';
+      section.appendChild(head);
+
+      var grid = document.createElement("div");
+      grid.className = "grid";
+
+      bucket.items.forEach(function(item){
+        var card = document.createElement("div");
+        card.className = "card";
+        card.dataset.match = norm(item.character+" "+item.actor.actor);
+        var also = '<div class="also">'+item.character+'</div>';
+        card.innerHTML = cardHtml(item.character, item.actor, also);
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+      list.appendChild(section);
+    });
+  }
+
+  function bindSearch(list){
     var searchInput = document.getElementById("search");
     var emptyMsg = document.getElementById("empty");
-    searchInput.addEventListener("input", function(){
+    function apply(){
       var q = norm(searchInput.value.trim());
       var anyVisible = false;
       list.querySelectorAll("section").forEach(function(section){
@@ -496,6 +438,49 @@
         if (anyCard) anyVisible = true;
       });
       emptyMsg.style.display = anyVisible ? "none" : "block";
+    }
+    searchInput.removeEventListener("input", searchInput._h || function(){});
+    searchInput._h = apply;
+    searchInput.addEventListener("input", apply);
+    apply();
+  }
+
+  function render(view){
+    var list = document.getElementById("list");
+    list.innerHTML = "";
+    var seenIn = {};
+    DATA.forEach(function(g){
+      g.actors.forEach(function(a){
+        seenIn[a.actor] = seenIn[a.actor] || [];
+        seenIn[a.actor].push(g.character);
+      });
+    });
+    if (view === "dates") renderByDates(list);
+    else renderByActors(list, seenIn);
+    bindSearch(list);
+  }
+
+  function buildPage(){
+    var totalActors = 0, totalMaterials = 0;
+    DATA.forEach(function(g){
+      totalActors += g.actors.length;
+      g.actors.forEach(function(a){ totalMaterials += (a.n_photo||0) + (a.n_video||0); });
+    });
+    document.getElementById("stat-roles").textContent = DATA.length;
+    document.getElementById("stat-actors").textContent = totalActors;
+    document.getElementById("stat-roles-word").textContent = pluralRu(DATA.length,'позиция','позиции','позиций');
+    document.getElementById("stat-actors-word").textContent = pluralRu(totalActors,'кандидат','кандидата','кандидатов');
+    document.getElementById("stat-materials").textContent = totalMaterials;
+    document.getElementById("stat-materials-word").textContent = pluralRu(totalMaterials,'материал','материала','материалов');
+
+    render("actors");
+
+    var toggle = document.getElementById("view-toggle");
+    toggle.addEventListener("click", function(ev){
+      var btn = ev.target.closest("button[data-view]");
+      if (!btn) return;
+      toggle.querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b === btn); });
+      render(btn.dataset.view);
     });
   }
 </script>
