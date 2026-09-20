@@ -196,10 +196,17 @@
     border-top:1px solid var(--line);
     margin-top:34px;
     padding:20px 0 56px;
-    font-size:12px;
+    font-size:13px;
     line-height:1.6;
     color:var(--text-dim);
   }
+  footer a{
+    color:var(--text);
+    font-weight:600;
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+  }
+  footer a:hover{ border-bottom-color:var(--text); }
 
   /* ---------- gate ---------- */
   #gate{
@@ -283,7 +290,7 @@
   <p id="empty">Ничего не найдено</p>
 
   <footer>
-    Ссылки «фото» / «видео» открываются в новой вкладке и ведут в ваше личное хранилище — сработают, если в браузере вы залогинены под тем же аккаунтом. Серые недоступные ссылки — там просто нет файлов этого типа.
+    <a id="disk-link" href="#" target="_blank" rel="noopener">Открыть папку на Яндекс.Диске</a>
   </footer>
 
 </div>
@@ -469,6 +476,8 @@
   }
 
   function buildPage(){
+    var diskLink = document.getElementById("disk-link");
+    if (diskLink) diskLink.href = ydLink(BASE_PATH);
     var totalActors = 0, totalMaterials = 0;
     DATA.forEach(function(g){
       totalActors += g.actors.length;
