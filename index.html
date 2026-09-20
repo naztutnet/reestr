@@ -309,20 +309,23 @@
     app.hidden = false;
     buildPage();
   }
+  var gateForm = document.getElementById("gate-form");
+  if (gateForm){
+    gateForm.addEventListener("submit", async function(ev){
+      ev.preventDefault();
+      var val = document.getElementById("gate-pass").value;
+      var hash = await sha256hex(val);
+      if (hash === PASS_HASH){
+        try{ sessionStorage.setItem("unlocked","1"); }catch(e){}
+        unlock();
+      } else {
+        document.getElementById("gate-err").textContent = "Неверный пароль";
+      }
+    });
+  }
   try{
     if (sessionStorage.getItem("unlocked") === "1") unlock();
   }catch(e){}
-  document.getElementById("gate-form").addEventListener("submit", async function(ev){
-    ev.preventDefault();
-    var val = document.getElementById("gate-pass").value;
-    var hash = await sha256hex(val);
-    if (hash === PASS_HASH){
-      try{ sessionStorage.setItem("unlocked","1"); }catch(e){}
-      unlock();
-    } else {
-      document.getElementById("gate-err").textContent = "Неверный пароль";
-    }
-  });
 
   // ---------- page build (only runs after unlock) ----------
   var MONTHS_RU = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
